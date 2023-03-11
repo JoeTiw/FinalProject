@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="603.0" style="-fx-background-color: #49422E;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.classproj.Login">
+   <left>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="284.0" fitWidth="256.0" layoutX="-25.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../src/img/GroupLogo.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+   </left>
+   <center>
+      <AnchorPane prefHeight="400.0" prefWidth="386.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="36.0" fitWidth="159.0" layoutX="126.0" layoutY="121.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../src/img/Login.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="28.0" layoutY="200.0" text="Username" textFill="#ffc900">
+               <font>
+                  <Font name="Arial Bold" size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="28.0" layoutY="252.0" prefHeight="20.0" prefWidth="102.0" text="Password" textFill="#ffc900">
+               <font>
+                  <Font name="Arial Rounded MT Bold" size="20.0" />
+               </font>
+            </Label>
+            <TextField fx:id="username" layoutX="130.0" layoutY="201.0" promptText="Username" />
+            <PasswordField fx:id="password" layoutX="130.0" layoutY="253.0" promptText="Password" />
+            <Button fx:id="loginbutton" layoutX="150.0" layoutY="297.0" mnemonicParsing="false" onAction="#userLogin" prefHeight="36.0" prefWidth="100.0" style="-fx-background-color: #ffc900;" text="Login">
+               <font>
+                  <Font name="Arial Rounded MT Bold" size="13.0" />
+               </font></Button>
+            <Button fx:id="signupbutton" layoutX="211.0" layoutY="343.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="69.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Sign-up" textFill="#21ff30" underline="true">
+               <font>
+                  <Font name="Arial Rounded MT Bold" size="13.0" />
+               </font></Button>
+            <Label fx:id="loginerror" layoutX="160.0" layoutY="173.0" textFill="#f20303" />
+            <Label layoutX="136.0" layoutY="349.0" prefHeight="17.0" prefWidth="86.0" text="Not a User ?" textFill="WHITE">
+               <font>
+                  <Font name="Arial Rounded MT Bold" size="12.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>
