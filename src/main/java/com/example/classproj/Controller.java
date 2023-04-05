@@ -8,6 +8,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 
 import java.util.ResourceBundle;
 
@@ -23,6 +29,10 @@ public class Controller implements Initializable {
 
     @FXML
     private PasswordField password;
+
+    @FXML
+    private Circle profilePicCircle;
+
         @Override
         public void initialize(java.net.URL url, ResourceBundle resourceBundle) {
 
@@ -30,19 +40,6 @@ public class Controller implements Initializable {
                @Override
                public void handle(ActionEvent event) {
                      DBUtils.loginUsers(event, username.getText(), password.getText());
-                     // once button is clicked it will go to the logged in page
-                   //if username is "admin" and password is "admin" then it will go to the logged in page else it will stay on the login page
-
-//                     if(username.getText().equals("admin") && password.getText().equals("admin")) {
-//                         DBUtils.changeScene(event, "logged-in.fxml", "Logged In", null);
-//                     } else{
-//                            System.out.println("Login Failed");
-//                         Alert alert = new Alert(Alert.AlertType.ERROR);
-//                            alert.setContentText("Login Failed");
-//                            alert.show();
-//                     }
-
-                        //DBUtils.changeScene(event, "logged-in.fxml", "Logged In", null);
                }
            });
 
@@ -59,4 +56,6 @@ public class Controller implements Initializable {
     public void userLogin(ActionEvent event) {
         DBUtils.loginUsers(event, username.getText(), password.getText());
     }
+
+
 }

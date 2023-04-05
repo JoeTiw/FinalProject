@@ -1,7 +1,6 @@
 package com.example.classproj;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -13,44 +12,45 @@ import java.util.ResourceBundle;
 
 public class SignUpController implements Initializable {
 
-    @FXML
-    private Button buttonToSignUp;
+        @FXML
+        private Button buttonToSignUp;
 
-    @FXML
-    private Button buttonToLogin;
+        @FXML
+        private Button buttonToLogin;
 
-    @FXML
-    private TextField username;
+        @FXML
+        private TextField signUpUsername;
 
-    @FXML
-    private PasswordField password;
+        @FXML
+        private PasswordField signUpPassword;
+
+        @Override
+        public void initialize(java.net.URL url, ResourceBundle resourceBundle) {
+
+                buttonToSignUp.setOnAction(event -> {
+                        if(!signUpUsername.getText().isEmpty() && !signUpPassword.getText().isEmpty()) {
+                                DBUtils.signUpUsers(event, signUpUsername.getText(), signUpPassword.getText());
+                               // DBUtils.changeScene(event, "login.fxml", "Login", null);
 
 
-    @Override
-    public void initialize(java.net.URL url, ResourceBundle resourceBundle) {
+                        } else {
+                                System.out.println("Sign Up Failed");
+                                Alert alert = new Alert(Alert.AlertType.ERROR);
+                                alert.setContentText("Sign Up Failed");
+                                alert.show();
+                        }
 
-        buttonToSignUp.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if (!username.getText().trim().isEmpty() && !password.getText().trim().isEmpty()) {
-                    DBUtils.signUpUsers(event, username.getText(), password.getText());
-                }
-                else {
-                    System.out.println("Please enter a username and password");
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setContentText("Please enter a username and password");
-                    alert.show();
-                }
-            }
-        });
+                });
 
-        buttonToLogin.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                DBUtils.changeScene(event, "hello-view.fxml", "Hello!", null);
-            }
-        });
+                buttonToLogin.setOnAction(event -> {
+                    DBUtils.changeScene(event, "hello-view.fxml", "JJK Tracker", null);
+                });
 
-    }
+
+
+
+        }
+
+
 
 }

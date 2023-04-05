@@ -1,0 +1,131 @@
+.background-layout{
+    -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #49422E, #202A44);
+}
+
+.logo-color{
+    -fx-text-fill: #F2F2F2;
+}
+
+/* Buttons */
+.button {
+    -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #49422E, #202A44);
+    -fx-text-fill: #fff;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 30px;
+    -fx-padding: 8px 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
+}
+.button:hover {
+    -fx-background-color: #34495e;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 12, 0, 0, 0);
+}
+.button:pressed {
+    -fx-background-color: #2c3e50;
+    -fx-effect: none;
+}
+
+/* Logout button */
+#logout_button {
+    -fx-background-color: #f1c40f;
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 30px;
+    -fx-padding: 8px 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
+}
+#logout_button:hover {
+    -fx-background-color: #f39c12;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 12, 0, 0, 0);
+}
+#logout_button:pressed {
+    -fx-background-color: #f1c40f;
+    -fx-effect: none;
+}
+
+
+/* AnchorPane */
+.balancepane {
+    -fx-background-color: #2c3e50;
+    -fx-border-radius: 20px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
+}
+
+/* FontAwesomeIcon */
+.fontawesome-icon {
+    -fx-fill: #f1c40f;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 0);
+}
+
+/* Labels */
+.label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #fff;
+}
+.label.total {
+    -fx-font-weight: bold;
+    -fx-padding: 5px 0;
+}
+.label.balance {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.categorypane {
+    -fx-background-color: linear-gradient(from 25% 25% to 100% 100%,  #f7dc6f ,  #e67e22 );
+    -fx-text-fill: #000;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 30px;
+    -fx-padding: 8px 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
+}
+/* Border around AnchorPane */
+
+
+
+/* FontAwesomeIcons */
+
+
+
+/*
+.menu_container{
+    -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #49422E, #202A44);
+    -fx-padding: 10 10 10 20;
+    -fx-spacing: 20;
+}
+
+.menu_container Button{
+    -fx-pref-width: 115;
+    -fx-pref-height: 40;
+    -fx-background-color: #F2F2F2;
+    -fx-text-fill: #49422E;
+    -fx-font-size: 1.1em;
+    -fx-alignment: center_left;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 0);
+}
+
+.menu_container Button:hover{
+    -fx-cursor: hand;
+}
+
+.menu_container Button FontAwesomeIconView{
+    -fx-fill: #49422E;
+
+}
+
+.alt_menu_btn{
+    -fx-pref-width: 115;
+    -fx-pref-height: 40;
+    -fx-background-color: #F2F2F2;
+    -fx-text-fill: #49422E;
+    -fx-font-size: 1.1em;
+    -fx-alignment: center_left;
+}
+
+.alt_menu_btn FontAwesomeIconView{
+    -fx-fill: #49422E;
+}
+*/

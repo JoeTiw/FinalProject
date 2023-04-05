@@ -15,6 +15,7 @@ public class DBUtils {
     public static void changeScene(ActionEvent event, String fxmlFile, String title, String username) {
         Parent root = null;
 
+
         //
         if (username != null) { // if username is not null, then we are logging in
             try {
@@ -22,6 +23,12 @@ public class DBUtils {
                 root = loader.load(); // load the fxml file
                 LoggedInController controller = loader.getController(); // get the controller of the fxml file
                 controller.setWelcomeLabel(username); // set the welcome label to the username
+
+                //make screen bigger
+                Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+                stage.setWidth(1300);
+                stage.setHeight(900);
+
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -49,9 +56,9 @@ public class DBUtils {
         ResultSet resultSet = null;     // results of the query
 
         try {
-            String url = "jdbc:mysql://127.0.0.1:3306/java_fx?useSSL=false&serverTimezone=UTC";
-            String usrname = "root";
-            String psswd = "password";
+            String url = "jdbc:mysql://classproj.c4pj5kawvmlt.us-east-2.rds.amazonaws.com:3307/java_fx?useSSL=true";
+            String usrname = "admin";
+            String psswd = "Ur05x^$4qL&F";
             conn = DriverManager.getConnection(url, usrname, psswd);
             chkUserExist = conn.prepareStatement("SELECT * FROM users WHERE username = ?"); // check if the user exists
             chkUserExist.setString(1, username); // set the username
@@ -67,7 +74,11 @@ public class DBUtils {
                 insertUser.setString(1, username); // set the username
                 insertUser.setString(2, password); // set the password
                 insertUser.executeUpdate(); // execute the query
-                changeScene(event, "logged-in.fxml", "Welcome", username);
+                //changeScene(event, "logged-in.fxml", "Welcome", username);
+                changeScene(event, "hello-view.fxml", "JJK Tracker!", null);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("Sign Up Successful..Sign in now");
+                alert.show();
 
             }
 
@@ -98,20 +109,13 @@ public class DBUtils {
 
 
 
-        try {
+            try{
 
-
-            //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/java_fx?useSSL=false&serverTimezone=UTC", "root", "password");
-            String url = "jdbc:mysql://127.0.0.1:3306/java_fx?useSSL=false&serverTimezone=UTC";
-            String usrname = "root";
-            String psswd = "password";
-
+                String url = "jdbc:mysql://classproj.c4pj5kawvmlt.us-east-2.rds.amazonaws.com:3307/java_fx?useSSL=true";
+                String usrname = "admin";
+                String psswd = "Ur05x^$4qL&F";
             conn = DriverManager.getConnection(url, usrname, psswd);
-            if(!conn.isClosed()){
-                Alert alert = new Alert(Alert.AlertType.ERROR); // create an alert
-                alert.setContentText("Connection is closed");
-                alert.show();
-            }
+
             preparedStatement = conn.prepareStatement("SELECT password FROM users WHERE username = ?");
             preparedStatement.setString(1, username); // set the username
             resultSet = preparedStatement.executeQuery(); // execute the query
@@ -127,7 +131,12 @@ public class DBUtils {
 
 
                     if (retrievedPassword.equals(password)) {
+                        preparedStatement = conn.prepareStatement("UPDATE users SET profile_pic=? WHERE username=?");
+                       // preparedStatement.setBytes(1, profilePicBytes);
+                       // preparedStatement.setString(2, username);
+                       // preparedStatement.executeUpdate();
                         changeScene(event, "logged-in.fxml", "Welcome", username);
+
                     } else {
                         Alert alert = new Alert(Alert.AlertType.ERROR); // create an alert
                         alert.setContentText("Enter correct username and password");
@@ -147,6 +156,11 @@ public class DBUtils {
                 e.printStackTrace();
             }
         }
+
+
+
+
+
 
     }
 
