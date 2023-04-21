@@ -137,6 +137,7 @@ public class DBUtils {
                        // preparedStatement.executeUpdate();
                         changeScene(event, "logged-in.fxml", "Welcome", username);
 
+
                     } else {
                         Alert alert = new Alert(Alert.AlertType.ERROR); // create an alert
                         alert.setContentText("Enter correct username and password");

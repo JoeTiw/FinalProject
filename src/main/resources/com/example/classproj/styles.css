@@ -61,8 +61,8 @@
 
 /* Labels */
 .label {
-    -fx-font-size: 16px;
-    -fx-text-fill: #fff;
+
+
 }
 .label.total {
     -fx-font-weight: bold;
@@ -75,7 +75,7 @@
 
 .categorypane {
     -fx-background-color: linear-gradient(from 25% 25% to 100% 100%,  #f7dc6f ,  #e67e22 );
-    -fx-text-fill: #000;
+
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-background-radius: 30px;
