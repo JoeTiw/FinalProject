@@ -15,7 +15,6 @@ public class DBUtils {
     public static void changeScene(ActionEvent event, String fxmlFile, String title, String username) {
         Parent root = null;
 
-
         //
         if (username != null) { // if username is not null, then we are logging in
             try {
@@ -100,6 +99,7 @@ public class DBUtils {
     }
 
     public static void loginUsers(ActionEvent event, String username, String password) {
+        int userId = 0;
 
         Connection conn = null;  // connection to the database
         PreparedStatement preparedStatement = null; // check if the user exists
@@ -111,6 +111,7 @@ public class DBUtils {
 
             try{
 
+
                 String url = "jdbc:mysql://classproj.c4pj5kawvmlt.us-east-2.rds.amazonaws.com:3307/java_fx?useSSL=true";
                 String usrname = "admin";
                 String psswd = "Ur05x^$4qL&F";
@@ -118,7 +119,8 @@ public class DBUtils {
 
             preparedStatement = conn.prepareStatement("SELECT password FROM users WHERE username = ?");
             preparedStatement.setString(1, username); // set the username
-            resultSet = preparedStatement.executeQuery(); // execute the query
+
+                resultSet = preparedStatement.executeQuery(); // execute the query
 
             if (!resultSet.isBeforeFirst()) { // if the user exists
                System.out.println("User does not exist");
@@ -135,6 +137,7 @@ public class DBUtils {
                        // preparedStatement.setBytes(1, profilePicBytes);
                        // preparedStatement.setString(2, username);
                        // preparedStatement.executeUpdate();
+
                         changeScene(event, "logged-in.fxml", "Welcome", username);
 
 

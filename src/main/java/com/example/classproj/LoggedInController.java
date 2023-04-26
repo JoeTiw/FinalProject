@@ -95,7 +95,9 @@ public class LoggedInController implements Initializable {
     @FXML
     private TextField purpose;
 
+
     //***************************List View----------------------------------//
+
 
 
     @FXML
@@ -116,11 +118,13 @@ public class LoggedInController implements Initializable {
 
     private Connection connection;
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-        loadTransactionsData();
-    }
+//    public void setUserId(int userId) {
+//        this.userId = userId;
+//        System.out.println("Logged in user ID: " + this.userId);
+//        loadTransactionsData();
+//    }
 
+    private int counter = 1;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -243,13 +247,13 @@ public class LoggedInController implements Initializable {
             e.printStackTrace();
         }
 
-//        this.userId = userId;
+       // this.userId = userId;
 
 
 
 
         // Initialize columns
-        transacNum.setCellValueFactory(new PropertyValueFactory<>("transactionId"));
+        //transacNum.setCellValueFactory(new PropertyValueFactory<>("transacNum"));
         idColumn.setCellValueFactory(new PropertyValueFactory<>("userId"));
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
@@ -257,61 +261,24 @@ public class LoggedInController implements Initializable {
         purposeColumn.setCellValueFactory(new PropertyValueFactory<>("purpose"));
 
         // Load data
-        loadTransactionsData();
+        loadTransactionsData(userId);
 
 
 
     }
 
-//    public void setUserId(int userId) {
-//        this.userId = userId;
-//        loadTransactionsData();
-//
-//    }
 
-
-    private void loadTransactionsData() {
-        ObservableList<Transaction> transactionsList = FXCollections.observableArrayList();
-
-        String sql = "SELECT id, userId, category, purpose, amount, date FROM transactions WHERE userId = ? ORDER BY date DESC";
-
-
-
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, userId); // Set the userId parameter value
-
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                int transacId = rs.getInt("id");
-                int user_Id = rs.getInt("userId");
-
-                String category = rs.getString("category");
-                double amount = rs.getDouble("amount");
-                Date date = rs.getDate("date");
-                String purpose = rs.getString("purpose");
-
-                Transaction transaction = new Transaction(transacId, user_Id, category, amount, date, purpose);
-                transactionsList.add(transaction);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-
-        // Set the data to the table
-        transactionsTable.setItems(transactionsList);
-    }
 
     public static class Transaction {
-        private final Integer transacId;
+        private final Integer transacNum;
         private final Integer userId;
         private final String category;
         private final Double amount;
         private final Date date;
         private final String purpose;
 
-        public Transaction(Integer transacId, Integer userId, String category, Double amount, Date date, String purpose) {
-            this.transacId = transacId;
+        public Transaction(Integer transacNum, Integer userId, String category, Double amount, Date date, String purpose) {
+            this.transacNum = transacNum;
             this.userId = userId;
             this.category = category;
             this.amount = amount;
@@ -319,9 +286,7 @@ public class LoggedInController implements Initializable {
             this.purpose = purpose;
         }
 
-        public Integer getId() {
-            return transacId;
-        }
+
 
         public Integer getUserId() {
             return userId;
@@ -347,10 +312,37 @@ public class LoggedInController implements Initializable {
 
 
 
+    private void loadTransactionsData(int userId) {
+        ObservableList<Transaction> transactionsList = FXCollections.observableArrayList();
+
+        String sql = "SELECT * FROM transactions WHERE userId = ? ORDER BY date DESC";
 
 
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+
+            counter = 1;
 
 
+            while (rs.next()) {
+               // int userId = rs.getInt("userId");
+                int transcId = rs.getInt("id");
+
+                String category = rs.getString("category");
+                double amount = rs.getDouble("amount");
+                Date date = rs.getDate("date");
+                String purpose = rs.getString("purpose");
+
+                Transaction transaction = new Transaction(counter++, userId, category, amount, date, purpose);
+                transactionsList.add(transaction);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        transactionsTable.setItems(transactionsList);
+    }
 
 
 
@@ -370,7 +362,26 @@ public class LoggedInController implements Initializable {
     private void handleSubmitButtonClick() {
         String purposeValue = purpose.getText();
         // Your code to save the data to the database goes here
+        handleCategoryExpenseSubmit();
+
+
+
+
     }
+
+    private void showErrorAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR, message);
+        alert.showAndWait();
+    }
+
+    private void showInfoAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 
     // updates the expense label after user submits expense
     private void updateExpenseLabel(double expense, Label expenseLabel) {
@@ -401,12 +412,18 @@ public class LoggedInController implements Initializable {
                 updateQuery = "UPDATE categories SET shopping = shopping + ? WHERE userId = ?";
             } else if (category.equals("Other")) {
                 updateQuery = "UPDATE categories SET other = other + ? WHERE userId = ?";
+            }else {
+                showErrorAlert("Invalid category: " + category);
+                return;
             }
+
 
             pstmt = conn.prepareStatement(updateQuery);
             pstmt.setDouble(1, expense);
             pstmt.setInt(2, userId);
             pstmt.executeUpdate();
+
+
 
             // Close the PreparedStatement to reuse it
             pstmt.close();
@@ -436,8 +453,39 @@ public class LoggedInController implements Initializable {
     }
 
 
+    private void addNewUserToCategories(int userId) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            String urll = "jdbc:mysql://classproj.c4pj5kawvmlt.us-east-2.rds.amazonaws.com:3307/java_fx?useSSL=true";
+            String usrname = "admin";
+            String psswd = "Ur05x^$4qL&F";
+            conn = DriverManager.getConnection(urll, usrname, psswd);
+
+            String insertQuery = "INSERT INTO categories (userId, food, shopping, bills, other) VALUES (?, 0, 0, 0, 0)";
+            pstmt = conn.prepareStatement(insertQuery);
+            pstmt.setInt(1, userId);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 
     private void handleCategoryExpenseSubmit() {
+
+
+
 
         Date currentDate = new java.sql.Date(System.currentTimeMillis());
         try {
@@ -453,7 +501,7 @@ public class LoggedInController implements Initializable {
             }
             if (shopCheckBox.isSelected()) {
                 updateExpenseLabel(expense, shopLabel);
-                updateCategoryExpenseInDatabase(userId, "Shopping", expense, currentDate);
+                updateCategoryExpenseInDatabase(userId, "Shop", expense, currentDate);
             }
             if (otherCheckBox.isSelected()) {
                 updateExpenseLabel(expense, otherLabel);
@@ -494,69 +542,68 @@ public class LoggedInController implements Initializable {
 
             expenseTotal.clear();
 
+            showInfoAlert("Expense submitted successfully!");
+
         } catch (NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a valid number.");
             alert.showAndWait();
         }
     }
 
-
     //---------------Show the total after user logs in-----------------//
 
-    private void updateCategoryTotals() {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet resultSet = null;
-
-        try {
-            String urll = "jdbc:mysql://classproj.c4pj5kawvmlt.us-east-2.rds.amazonaws.com:3307/java_fx?useSSL=true";
-            String usrname = "admin";
-            String psswd = "Ur05x^$4qL&F";
-            conn = DriverManager.getConnection(urll, usrname, psswd);
-
-            pstmt = conn.prepareStatement("SELECT category, SUM(amount) as total FROM expenses WHERE user_id = ? GROUP BY category");
-            pstmt.setInt(1, userId);
-            resultSet = pstmt.executeQuery();
-
-            while (resultSet.next()) {
-                String category = resultSet.getString("category");
-                double total = resultSet.getDouble("total");
-
-                switch (category) {
-                    case "Food":
-                        foodLabel.setText(Double.toString(total));
-                        break;
-                    case "Bills":
-                        billsLabel.setText(Double.toString(total));
-                        break;
-                    case "Shop":
-                        shopLabel.setText(Double.toString(total));
-                        break;
-                    case "Other":
-                        otherLabel.setText(Double.toString(total));
-                        break;
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (resultSet != null) resultSet.close();
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    private void updateCategoryTotals() {
+//        Connection conn = null;
+//        PreparedStatement pstmt = null;
+//        ResultSet resultSet = null;
+//
+//        try {
+//            String urll = "jdbc:mysql://classproj.c4pj5kawvmlt.us-east-2.rds.amazonaws.com:3307/java_fx?useSSL=true";
+//            String usrname = "admin";
+//            String psswd = "Ur05x^$4qL&F";
+//            conn = DriverManager.getConnection(urll, usrname, psswd);
+//
+//            pstmt = conn.prepareStatement("SELECT category, SUM(amount) as total FROM expenses WHERE user_id = ? GROUP BY category");
+//            pstmt.setInt(1, userId);
+//            resultSet = pstmt.executeQuery();
+//
+//            while (resultSet.next()) {
+//                String category = resultSet.getString("category");
+//                double total = resultSet.getDouble("total");
+//
+//                switch (category) {
+//                    case "Food":
+//                        foodLabel.setText(Double.toString(total));
+//                        break;
+//                    case "Bills":
+//                        billsLabel.setText(Double.toString(total));
+//                        break;
+//                    case "Shop":
+//                        shopLabel.setText(Double.toString(total));
+//                        break;
+//                    case "Other":
+//                        otherLabel.setText(Double.toString(total));
+//                        break;
+//                }
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (resultSet != null) resultSet.close();
+//                if (pstmt != null) pstmt.close();
+//                if (conn != null) conn.close();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
 
     //***************************Categories End----------------------------------//
 
+    //***************************Welcome Label Start----------------------------------//
 
-
-
-    // Set the welcome label to display the username of the logged-in user
     public void setWelcomeLabel(String username) {
         welcome_label.setText("Welcome, " + username);
         loggedInUsername = username;
@@ -576,6 +623,19 @@ public class LoggedInController implements Initializable {
             if (resultSet.next()) {
                 userId = resultSet.getInt("user_id"); // Get the user ID
                 totalCash = resultSet.getDouble("total"); // Get the total cash for the user
+
+                // Check if the user exists in the categories table
+                pstmt = conn.prepareStatement("SELECT COUNT(*) AS count FROM categories WHERE userId = ?");
+                pstmt.setInt(1, userId);
+                resultSet = pstmt.executeQuery();
+                resultSet.next();
+                int count = resultSet.getInt("count");
+
+                // If the user does not exist in the categories table, add them
+                if (count == 0) {
+                    addNewUserToCategories(userId);
+                }
+
                 totalLabel.setText(Double.toString(totalCash)); // Set the total cash for the user in the UI
 
                 // Get the category amounts for the user
@@ -596,6 +656,8 @@ public class LoggedInController implements Initializable {
                     otherLabel.setText(Double.toString(otherAmount));
                 }
             }
+            loadTransactionsData(userId);
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

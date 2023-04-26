@@ -70,16 +70,18 @@
             </Label>
          </children>
       </AnchorPane>
+
+
       <AnchorPane layoutX="304.0" layoutY="233.0" prefHeight="433.0" prefWidth="662.0" styleClass="background-layout">
          <children>
             <Label layoutX="232.0" layoutY="14.0" text="Recents Transactions" textFill="#ffc900">
                <font>
                   <Font size="32.0" />
                </font></Label>
-            <TableView fx:id="transactionsTable" layoutX="20.0" layoutY="50.0" prefHeight="350.0" prefWidth="622.0">
+            <TableView fx:id="transactionsTable" layoutX="20.0" layoutY="50.0" prefHeight="350.0" prefWidth="622.0" stylesheets="@styles.css">
                <columns>
-                  <TableColumn fx:id="transacNum" minWidth="0.0" prefWidth="60.0" text="No." />
-                  <TableColumn fx:id="idColumn" prefWidth="60.0" text="ID" />
+
+                  <TableColumn fx:id="idColumn" prefWidth="60.0" text="USER ID" />
                   <TableColumn fx:id="categoryColumn" minWidth="0.0" prefWidth="120.0" text="Category" />
                   <TableColumn fx:id="amountColumn" minWidth="0.0" prefWidth="100.0" text="Amount" />
                   <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="130.0" text="Date" />
