@@ -1,5 +1,7 @@
 package com.example.classproj;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,7 +22,9 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.control.cell.PropertyValueFactory;
-
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.time.LocalDate;
 
 import java.io.*;
 import java.net.URL;
@@ -131,6 +135,168 @@ public class LoggedInController implements Initializable {
 
     private int counter = 1;
 
+    @FXML
+    private void generateReport() {
+        final double[] total = {0.0};
+        Stage popupStage = new Stage();
+        popupStage.setTitle("Generate Report");
+
+        Label startDateLabel = new Label("Start Date:");
+        DatePicker startDatePicker = new DatePicker();
+        Label endDateLabel = new Label("End Date:");
+        DatePicker endDatePicker = new DatePicker();
+
+        Label categoryLabel = new Label("Category:");
+        ObservableList<String> categoryOptions = FXCollections.observableArrayList("food", "shopping", "bills", "other", "all");
+        ComboBox<String> categoryComboBox = new ComboBox<>(categoryOptions);
+        categoryComboBox.setValue("Select a category");
+
+        Label fileTypeLabel = new Label("File Type:");
+        ObservableList<String> fileTypeOptions = FXCollections.observableArrayList("csv", "txt", "pdf");
+        ComboBox<String> fileTypeComboBox = new ComboBox<>(fileTypeOptions);
+        fileTypeComboBox.setValue("Select a file type");
+
+        Button submitBtn = new Button("Generate Report");
+        submitBtn.setOnAction(submitEvent -> {
+            try {
+                // Retrieve the selected start and end dates, category, and file type
+                LocalDate startDate = startDatePicker.getValue();
+                LocalDate endDate = endDatePicker.getValue();
+                String category = categoryComboBox.getValue();
+                String fileType = fileTypeComboBox.getValue();
+
+                // Query the transactions table for transactions that match the user's selections
+                ResultSet rs;
+                String sql;
+                if (category.equals("all")) {
+                    sql = "SELECT t.category, t.purpose, t.amount, t.date " +
+                            "FROM transactions t " +
+                            "WHERE t.userId = ? AND t.date BETWEEN ? AND ?";
+                    PreparedStatement pstmt = connection.prepareStatement(sql);
+                    pstmt.setInt(1, userId);
+                    pstmt.setDate(2, Date.valueOf(startDate));
+                    pstmt.setDate(3, Date.valueOf(endDate));
+                    rs = pstmt.executeQuery();
+                } else {
+                    sql = "SELECT t.category, t.purpose, t.amount, t.date " +
+                            "FROM transactions t " +
+                            "WHERE t.userId = ? AND t.category = ? AND t.date BETWEEN ? AND ?";
+                    PreparedStatement pstmt = connection.prepareStatement(sql);
+                    pstmt.setInt(1, userId);
+                    pstmt.setString(2, category);
+                    pstmt.setDate(3, Date.valueOf(startDate));
+                    pstmt.setDate(4, Date.valueOf(endDate));
+                    rs = pstmt.executeQuery();
+                }
+
+                // Generate report file
+                String filename = "report." + fileType;
+                BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
+
+                // I want to generate a timestamp for the filename but it breaks the program
+                /*DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+                String timestamp = LocalDateTime.now().format(formatter);
+                String filename = "report_" + timestamp + "." + fileType;*/
+
+                if (fileType.equals("csv")) {
+                    writer.write(String.format("%s's report for category \"%s\" from %s to %s\n", loggedInUsername, category, startDate, endDate));
+                    writer.write("Category,Purpose,Amount,Date\n");
+                    while (rs.next()) {
+                        category = rs.getString("category");
+                        String purpose = rs.getString("purpose");
+                        double amount = rs.getDouble("amount");
+                        LocalDate date = rs.getDate("date") != null ? rs.getDate("date").toLocalDate() : null;
+                        if (date != null) {
+                            writer.write(String.format("%s,%s,%.2f,%s\n", category, purpose, amount, date));
+                        } else {
+                            writer.write(String.format("%s,%s,%.2f,%s\n", category, purpose, amount, "N/A"));
+                        }
+                        total[0] = total[0] + amount;
+                    }
+                    writer.write(String.format("Total: ,,,,,%.2f\n", total[0]));
+                } else if (fileType.equals("txt")) {
+                    writer.write(String.format("%s's report for category \"%s\" from %s to %s\n\n", loggedInUsername, category, startDate, endDate));
+                    while (rs.next()) {
+                        category = rs.getString("category");
+                        String purpose = rs.getString("purpose");
+                        double amount = rs.getDouble("amount");
+                        total[0] += amount;
+                        Date date = rs.getDate("date");
+                        writer.write(String.format("Category: %s\nPurpose: %s\nAmount: %.2f\nDate: %s\n\n", category, purpose, amount, date));
+                    }
+                    writer.write(String.format("Total: %.2f\n", total[0]));
+                } else if (fileType.equals("pdf")) {
+                    Document document = new Document();
+                    PdfWriter.getInstance(document, new FileOutputStream(filename));
+                    document.open();
+                    Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
+                    PdfPTable table = new PdfPTable(4);
+
+                    // Add title row
+                    PdfPCell titleCell = new PdfPCell(new Phrase(loggedInUsername + "'s report for category \"" + category +
+                            "\" from " + startDate + " to " + endDate, boldFont));
+                    titleCell.setColspan(4);
+                    titleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    table.addCell(titleCell);
+
+                    PdfPCell cell1 = new PdfPCell(new Phrase("Category", boldFont));
+                    PdfPCell cell2 = new PdfPCell(new Phrase("Purpose", boldFont));
+                    PdfPCell cell3 = new PdfPCell(new Phrase("Amount", boldFont));
+                    PdfPCell cell4 = new PdfPCell(new Phrase("Date", boldFont));
+                    table.addCell(cell1);
+                    table.addCell(cell2);
+                    table.addCell(cell3);
+                    table.addCell(cell4);
+                    while (rs.next()) {
+                        category = rs.getString("category");
+                        String purpose = rs.getString("purpose");
+                        double amount = rs.getDouble("amount");
+                        Date date = rs.getDate("date");
+                        table.addCell(category);
+                        table.addCell(purpose);
+                        table.addCell(Double.toString(amount));
+                        table.addCell(date.toString());
+                        total[0] += amount;
+                    }
+
+                    PdfPCell totalValueCell = new PdfPCell(new Phrase(""));
+                    totalValueCell.setColspan(3);
+                    table.addCell(totalValueCell);
+                    PdfPCell totalCell = new PdfPCell(new Phrase("Total: " + Double.toString(total[0]), boldFont));
+                    totalCell.setColspan(1);
+                    table.addCell(totalCell);
+
+                    //table.addCell("");
+
+                    document.add(table);
+                    document.close();
+                }
+
+                writer.close();
+                Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                successAlert.setHeaderText(null);
+                successAlert.setContentText("Report successfully generated!");
+                successAlert.showAndWait();
+
+                popupStage.close();
+            } catch (SQLException | IOException | DocumentException e) {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setHeaderText(null);
+                errorAlert.setContentText("Error generating report: " + e.getMessage());
+                errorAlert.showAndWait();
+            }
+        });
+
+        VBox popupLayout = new VBox();
+        popupLayout.setSpacing(10);
+        popupLayout.setPadding(new Insets(20, 20, 20, 20));
+        popupLayout.getChildren().addAll(startDateLabel, startDatePicker, endDateLabel, endDatePicker, categoryLabel, categoryComboBox, fileTypeLabel, fileTypeComboBox, submitBtn);
+
+        Scene popupScene = new Scene(popupLayout);
+        popupStage.setScene(popupScene);
+        popupStage.show();
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -173,6 +339,9 @@ public class LoggedInController implements Initializable {
 
             dialog.showAndWait();
         });
+
+
+
 
 
 

@@ -11,6 +11,7 @@ module com.example.classproj {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.sql;
+    requires itextpdf;
 
 
     opens com.example.classproj to javafx.fxml;
