@@ -1,16 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import de.jensd.fx.glyphs.fontawesome.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="900.0" prefWidth="1300.0" styleClass="background-layout" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.classproj.LoggedInController">
+<AnchorPane prefHeight="900.0" prefWidth="1300.0" styleClass="background-layout" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.classproj.LoggedInController">
    <children>
       <Label fx:id="welcome_label" layoutX="489.0" layoutY="37.0" prefHeight="33.0" prefWidth="343.0" text="Welcome" textFill="WHITE">
          <font>
-            <Font name="Arial Rounded MT Bold" size="40.0" />
+            <Font name="Arial Rounded MT Bold" size="31.0" />
          </font>
       </Label>
       <HBox layoutY="-1.0" prefHeight="108.0" prefWidth="317.0">
@@ -26,7 +36,7 @@
          <children>
             <Button layoutX="84.0" layoutY="283.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="123.0" text="Dashboard" />
             <Button fx:id="addCashBtn" layoutX="84.0" layoutY="344.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="123.0" text="Add Cash" />
-            <Button layoutX="84.0" layoutY="399.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="123.0" text="Help" />
+            <Button fx:id="helpButton" layoutX="84.0" layoutY="399.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="123.0" text="Help" />
             <Circle fx:id="profilePicCircle" fill="DODGERBLUE" layoutX="153.0" layoutY="122.0" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
             <Line endX="100.0" layoutX="146.0" layoutY="483.0" startX="-100.0" />
             <Button fx:id="logout_button" layoutX="82.0" layoutY="511.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="129.0" style="-fx-background-color: #ffc900;" text="Logout">
@@ -42,12 +52,12 @@
          <children>
             <VBox layoutX="247.0" layoutY="3.0" prefHeight="70.0" prefWidth="47.0">
                <children>
-                  <FontAwesomeIcon iconName="MONEY" size="60" />
+                  <FontAwesomeIcon iconName="HOME" size="60" text="" />
                </children>
             </VBox>
             <Label fx:id="totalLabel" layoutX="123.0" layoutY="93.0" prefHeight="20.0" prefWidth="71.0" text="0" textFill="#140707">
                <font>
-                  <Font size="23.0" />
+                  <Font size="19.0" />
                </font></Label>
             <Label layoutX="26.0" layoutY="90.0" text="Total: " textFill="#140707">
                <font>
@@ -61,13 +71,13 @@
       </AnchorPane>
       <AnchorPane layoutX="627.0" layoutY="721.0" prefHeight="172.0" prefWidth="129.0" styleClass="categorypane">
          <children>
-            <FontAwesomeIcon iconName="SHOPPING_CART" layoutX="52.0" layoutY="123.0" size="60" />
             <Label layoutX="66.0" layoutY="52.0" text="Shop" />
             <Label fx:id="shopLabel" layoutX="64.0" layoutY="14.0" text="0">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
+            <FontAwesomeIcon iconName="SHOPPING_CART" layoutX="52.0" layoutY="123.0" size="60" styleClass="categorypane" text="" />
          </children>
       </AnchorPane>
 
@@ -80,16 +90,12 @@
                </font></Label>
             <TableView fx:id="transactionsTable" layoutX="20.0" layoutY="50.0" prefHeight="350.0" prefWidth="622.0" stylesheets="@styles.css">
                <columns>
-
-                  <TableColumn fx:id="idColumn" prefWidth="60.0" text="USER ID" />
                   <TableColumn fx:id="categoryColumn" minWidth="0.0" prefWidth="120.0" text="Category" />
                   <TableColumn fx:id="amountColumn" minWidth="0.0" prefWidth="100.0" text="Amount" />
                   <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="130.0" text="Date" />
-                  <TableColumn fx:id="purposeColumn" minWidth="0.0" prefWidth="132.0" text="Purpose" />
+                  <TableColumn fx:id="purposeColumn" minWidth="0.0" prefWidth="232.0" text="Purpose" />
                </columns>
             </TableView>
-
-
          </children>
       </AnchorPane>
       <Label layoutX="538.0" layoutY="681.0" text="Categories" textFill="#ffc900">
@@ -99,7 +105,7 @@
       </Label>
       <AnchorPane layoutX="793.0" layoutY="721.0" prefHeight="172.0" prefWidth="129.0" styleClass="categorypane">
          <children>
-            <FontAwesomeIcon iconName="SHOPPING_CART" layoutX="52.0" layoutY="123.0" size="60" styleClass="categorypane" />
+            <FontAwesomeIcon iconName="COFFEE" layoutX="52.0" layoutY="123.0" size="60" styleClass="categorypane" text="" />
             <Label layoutX="66.0" layoutY="52.0" text="Other" />
             <Label fx:id="otherLabel" layoutX="64.0" layoutY="14.0" text="0">
                <font>
@@ -108,20 +114,20 @@
             </Label>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="464.0" layoutY="721.0" prefHeight="172.0" prefWidth="129.0" styleClass="categorypane">
+      <AnchorPane layoutX="464.0" layoutY="721.0" prefHeight="172.0" prefWidth="148.0" styleClass="categorypane">
          <children>
-            <FontAwesomeIcon iconName="SHOPPING_CART" layoutX="52.0" layoutY="123.0" size="60" />
             <Label layoutX="66.0" layoutY="52.0" text="Bills" />
             <Label fx:id="billsLabel" layoutX="64.0" layoutY="14.0" text="0">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
+            <FontAwesomeIcon iconName="HOME" layoutX="46.0" layoutY="128.0" size="60" />
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="304.0" layoutY="721.0" prefHeight="172.0" prefWidth="129.0" styleClass="categorypane">
+      <AnchorPane layoutX="304.0" layoutY="721.0" prefHeight="172.0" prefWidth="148.0" styleClass="categorypane">
          <children>
-            <FontAwesomeIcon iconName="SHOPPING_CART" layoutX="52.0" layoutY="123.0" size="60" />
+            <FontAwesomeIcon iconName="CUTLERY" layoutX="50.0" layoutY="131.0" size="60" />
             <Label layoutX="66.0" layoutY="52.0" text="Food " />
             <Label fx:id="foodLabel" layoutX="64.0" layoutY="14.0" text="0">
                <font>

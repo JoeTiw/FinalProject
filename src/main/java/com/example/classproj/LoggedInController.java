@@ -5,8 +5,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
@@ -56,6 +58,9 @@ public class LoggedInController implements Initializable {
 
     @FXML
     private Label totalLabel;
+
+    @FXML
+    private Button helpButton;
 
     private int userId;
 
@@ -147,6 +152,29 @@ public class LoggedInController implements Initializable {
         }
 
         //--------Profile picture End---------- //
+
+
+        //--------Help Button Start---------- //
+
+
+        helpButton.setOnAction(actionEvent -> {
+            Dialog<String> dialog = new Dialog<>();
+            dialog.setTitle("Help");
+            dialog.setHeaderText("Budget Tracker Help");
+            dialog.setContentText("Here is some basic help information for the budget tracker app.\n\n" +
+                    "1. Add Cash: Use this button to add cash to your budget.\n" +
+                    "2. Dashboard: View the main dashboard with summary information.\n" +
+                    "3. Help: Get help and assistance on using the app.\n" +
+                    "4. Logout: Log out from the app.\n\n" +
+                    "For more detailed help, please refer to the user manual.");
+
+            ButtonType closeButton = new ButtonType("Close", ButtonBar.ButtonData.CANCEL_CLOSE);
+            dialog.getDialogPane().getButtonTypes().add(closeButton);
+
+            dialog.showAndWait();
+        });
+
+
 
 
 
@@ -254,7 +282,7 @@ public class LoggedInController implements Initializable {
 
         // Initialize columns
         //transacNum.setCellValueFactory(new PropertyValueFactory<>("transacNum"));
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("userId"));
+        //idColumn.setCellValueFactory(new PropertyValueFactory<>("userId"));
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
