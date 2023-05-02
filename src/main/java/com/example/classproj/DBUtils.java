@@ -25,8 +25,10 @@ public class DBUtils {
 
                 //make screen bigger
                 Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-                stage.setWidth(1500);
+                stage.setWidth(1400);
                 stage.setHeight(930);
+                stage.setX(200);
+                stage.setY(50);
 
 
             } catch (IOException e) {
@@ -109,21 +111,21 @@ public class DBUtils {
 
 
 
-            try{
+        try{
 
 
-                String url = "jdbc:mysql://classproj.c4pj5kawvmlt.us-east-2.rds.amazonaws.com:3307/java_fx?useSSL=true";
-                String usrname = "admin";
-                String psswd = "Ur05x^$4qL&F";
+            String url = "jdbc:mysql://classproj.c4pj5kawvmlt.us-east-2.rds.amazonaws.com:3307/java_fx?useSSL=true";
+            String usrname = "admin";
+            String psswd = "Ur05x^$4qL&F";
             conn = DriverManager.getConnection(url, usrname, psswd);
 
             preparedStatement = conn.prepareStatement("SELECT password FROM users WHERE username = ?");
             preparedStatement.setString(1, username); // set the username
 
-                resultSet = preparedStatement.executeQuery(); // execute the query
+            resultSet = preparedStatement.executeQuery(); // execute the query
 
             if (!resultSet.isBeforeFirst()) { // if the user exists
-               System.out.println("User does not exist");
+                System.out.println("User does not exist");
                 Alert alert = new Alert(Alert.AlertType.ERROR); // create an alert
                 alert.setContentText("Enter correct username and password");
                 alert.show();
@@ -134,9 +136,9 @@ public class DBUtils {
 
                     if (retrievedPassword.equals(password)) {
                         preparedStatement = conn.prepareStatement("UPDATE users SET profile_pic=? WHERE username=?");
-                       // preparedStatement.setBytes(1, profilePicBytes);
-                       // preparedStatement.setString(2, username);
-                       // preparedStatement.executeUpdate();
+                        // preparedStatement.setBytes(1, profilePicBytes);
+                        // preparedStatement.setString(2, username);
+                        // preparedStatement.executeUpdate();
 
                         changeScene(event, "logged-in.fxml", "Welcome", username);
 
