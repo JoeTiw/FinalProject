@@ -16,6 +16,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.chart.PieChart?>
 <AnchorPane prefHeight="900.0" prefWidth="1300.0" styleClass="background-layout" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.classproj.LoggedInController">
    <children>
       <Label fx:id="welcome_label" layoutX="489.0" layoutY="37.0" prefHeight="33.0" prefWidth="343.0" text="Welcome" textFill="WHITE">
@@ -165,6 +166,11 @@
                </font>
             </Label>
             <DatePicker layoutX="171.0" layoutY="176.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="900" layoutY="380" prefHeight="350.0" prefWidth="350.0">
+         <children>
+            <PieChart fx:id="pieChart" layoutX="15.0" layoutY="15.0" prefHeight="500.0" prefWidth="500.0" />
          </children>
       </AnchorPane>
    </children>

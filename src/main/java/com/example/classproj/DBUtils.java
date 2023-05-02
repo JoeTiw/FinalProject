@@ -25,8 +25,8 @@ public class DBUtils {
 
                 //make screen bigger
                 Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-                stage.setWidth(1300);
-                stage.setHeight(900);
+                stage.setWidth(1500);
+                stage.setHeight(930);
 
 
             } catch (IOException e) {

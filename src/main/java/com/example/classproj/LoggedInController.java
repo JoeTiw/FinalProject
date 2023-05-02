@@ -12,6 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -124,7 +125,8 @@ public class LoggedInController implements Initializable {
     @FXML
     private TableColumn<Transaction, Integer> transacNum;
 
-
+    @FXML
+    private PieChart pieChart;
     private Connection connection;
 
 //    public void setUserId(int userId) {
@@ -301,6 +303,7 @@ public class LoggedInController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
 
+
         submitButton.setOnAction(event -> handleCategoryExpenseSubmit());
         //--------Profile picture start---------- //
 
@@ -339,11 +342,6 @@ public class LoggedInController implements Initializable {
 
             dialog.showAndWait();
         });
-
-
-
-
-
 
 
 
@@ -428,6 +426,7 @@ public class LoggedInController implements Initializable {
         //-----------------------------------Add Cash End----------------------------------------//
 
 
+
         logout_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -460,9 +459,52 @@ public class LoggedInController implements Initializable {
         // Load data
         loadTransactionsData(userId);
 
-
+//        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+//
+//
+//        try {
+//            Connection conn = DriverManager.getConnection("jdbc:mysql://classproj.c4pj5kawvmlt.us-east-2.rds.amazonaws.com:3307/java_fx?useSSL=true", "admin", "Ur05x^$4qL&F");
+//            Statement stmt = conn.createStatement();
+//            ResultSet rs = stmt.executeQuery("SELECT category, sum(amount) FROM transactions GROUP BY category");
+//
+//            while (rs.next()) {
+//                String category = rs.getString("category");
+//                double amount = rs.getDouble("sum(amount)");
+//
+//                PieChart.Data data = new PieChart.Data(category, amount);
+//                pieChartData.add(data);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        pieChart.setData(pieChartData);
 
     }
+
+    private void updatePieChart(int userId) {
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+
+        try {
+            PreparedStatement pstmt = connection.prepareStatement("SELECT category, sum(amount) FROM transactions WHERE userId = ? GROUP BY category");
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String category = rs.getString("category");
+                double amount = rs.getDouble("sum(amount)");
+
+                PieChart.Data data = new PieChart.Data(category, amount);
+                pieChartData.add(data);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        pieChart.setData(pieChartData);
+    }
+
+
 
 
 
@@ -723,6 +765,9 @@ public class LoggedInController implements Initializable {
                 pstmt.setInt(2, userId);
                 pstmt.executeUpdate();
 
+                updatePieChart(userId);
+                loadTransactionsData(userId);
+
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
@@ -748,53 +793,6 @@ public class LoggedInController implements Initializable {
     }
 
     //---------------Show the total after user logs in-----------------//
-
-//    private void updateCategoryTotals() {
-//        Connection conn = null;
-//        PreparedStatement pstmt = null;
-//        ResultSet resultSet = null;
-//
-//        try {
-//            String urll = "jdbc:mysql://classproj.c4pj5kawvmlt.us-east-2.rds.amazonaws.com:3307/java_fx?useSSL=true";
-//            String usrname = "admin";
-//            String psswd = "Ur05x^$4qL&F";
-//            conn = DriverManager.getConnection(urll, usrname, psswd);
-//
-//            pstmt = conn.prepareStatement("SELECT category, SUM(amount) as total FROM expenses WHERE user_id = ? GROUP BY category");
-//            pstmt.setInt(1, userId);
-//            resultSet = pstmt.executeQuery();
-//
-//            while (resultSet.next()) {
-//                String category = resultSet.getString("category");
-//                double total = resultSet.getDouble("total");
-//
-//                switch (category) {
-//                    case "Food":
-//                        foodLabel.setText(Double.toString(total));
-//                        break;
-//                    case "Bills":
-//                        billsLabel.setText(Double.toString(total));
-//                        break;
-//                    case "Shop":
-//                        shopLabel.setText(Double.toString(total));
-//                        break;
-//                    case "Other":
-//                        otherLabel.setText(Double.toString(total));
-//                        break;
-//                }
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                if (resultSet != null) resultSet.close();
-//                if (pstmt != null) pstmt.close();
-//                if (conn != null) conn.close();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 
 
     //***************************Categories End----------------------------------//
@@ -854,6 +852,7 @@ public class LoggedInController implements Initializable {
                 }
             }
             loadTransactionsData(userId);
+            updatePieChart(userId);
 
         } catch (SQLException e) {
             e.printStackTrace();
